@@ -1,0 +1,41 @@
+.main-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 30px;
+  width: 100%;
+  background-color: white;
+  margin-top: 5%;
+  border-radius: 8px;
+}
+
+.slider-container {
+  width: 100%;
+}
+.slick-prev:before,
+.slick-next:before {
+  font-size: 30px;
+  color: rgb(12, 9, 9); /* Change color to make arrows visible */
+}
+.slick-item {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  align-items: center;
+  text-align: center;
+  margin: 0 10px;
+  font-family: Inter;
+  font-size: 12px;
+  font-weight: 500;
+  /* Add margin to create spacing between items */
+}
+.slick-item-pic {
+  width: 100%;
+  max-width: 350px;
+  height: 200px;
+  border-radius: 5px;
+  /* Add margin to create spacing between items */
+}
+.slick-slide {
+  padding: 0px 10px;
+}
