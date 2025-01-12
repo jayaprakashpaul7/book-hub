@@ -1,6 +1,6 @@
 import {Component} from 'react'
 import Cookies from 'js-cookie'
-import {Redirect} from 'react-router-dom'
+import {Redirect, Link} from 'react-router-dom'
 import ReactSlider from '../ReactSlider'
 import './index.css'
 import Header from '../Header'
@@ -16,9 +16,11 @@ const Home = () => (
           enjoyed in the past, and we will give you surprisingly insightful
           recommendations.
         </p>
-        <button className="find-book-btn" type="button">
-          Find Books
-        </button>
+        <Link className="link" to="/shelf">
+          <button className="find-book-btn" type="button">
+            Find Books
+          </button>
+        </Link>
       </div>
       <div className="slider">
         <ReactSlider />

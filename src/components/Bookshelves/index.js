@@ -1,9 +1,18 @@
 import './index.css'
 import {Component} from 'react'
 import {BsSearch} from 'react-icons/bs'
+import Loader from 'react-loader-spinner'
 import {Link} from 'react-router-dom'
 import Cookies from 'js-cookie'
 import Header from '../Header'
+import BookStatus from '../BookStatus'
+
+const apiStatusConstants = {
+  initial: 'INITIAL',
+  success: 'SUCCESS',
+  failure: 'FAILURE',
+  inProgress: 'IN_PROGRESS',
+}
 
 const bookshelvesList = [
   {
@@ -29,13 +38,19 @@ const bookshelvesList = [
 ]
 
 class Bookshelves extends Component {
-  state = {searchInput: '', booksData: [], shelf: bookshelvesList[0].value}
+  state = {
+    searchInput: '',
+    booksData: [],
+    shelf: bookshelvesList[0].value,
+    apiStatus: apiStatusConstants.initial,
+  }
 
   componentDidMount() {
     this.getBooksData()
   }
 
-  getBooksData = async event => {
+  getBooksData = async () => {
+    this.setState({apiStatus: apiStatusConstants.inProgress})
     const {searchInput, shelf} = this.state
     const jwtToken = Cookies.get('jwt_token')
     const url = `https://apis.ccbp.in/book-hub/books?shelf=${shelf}&search=${searchInput}`
@@ -44,20 +59,26 @@ class Bookshelves extends Component {
       headers: {Authorization: `Bearer ${jwtToken}`},
     }
     const response = await fetch(url, options)
-
     const data = await response.json()
-    const {books} = data
+    if (response.ok) {
+      const {books} = data
 
-    const updatedBooksData = books.map(each => ({
-      id: each.id,
-      title: each.title,
-      authorName: each.author_name,
-      coverPic: each.cover_pic,
-      rating: each.rating,
-      readStatus: each.read_status,
-    }))
+      const updatedBooksData = books.map(each => ({
+        id: each.id,
+        title: each.title,
+        authorName: each.author_name,
+        coverPic: each.cover_pic,
+        rating: each.rating,
+        readStatus: each.read_status,
+      }))
 
-    this.setState({booksData: updatedBooksData})
+      this.setState({
+        booksData: updatedBooksData,
+        apiStatus: apiStatusConstants.success,
+      })
+    } else {
+      this.setState({apiStatus: apiStatusConstants.failure})
+    }
   }
 
   onChangeSearchInput = event => {
@@ -68,8 +89,87 @@ class Bookshelves extends Component {
     this.setState({shelf: value}, this.getBooksData)
   }
 
+  failureView = () => (
+    <div className="failure-view">
+      <img
+        src="https://res.cloudinary.com/student7/image/upload/v1735955098/Group_7522_ofuhzp.png"
+        alt="failure view"
+      />
+      <h1>Something went wrong. Please try again</h1>
+      <Link to="/" className="Link">
+        <button type="button">Try Again</button>
+      </Link>
+    </div>
+  )
+
+  loaderView = () => (
+    <div className="loader-container" testid="loader">
+      <Loader type="TailSpin" color="#0284C7" height={50} width={50} />
+    </div>
+  )
+
+  renderBooks = () => {
+    const {searchInput, booksData, shelf} = this.state
+    const isbooksDataShown = booksData.length > 0
+    return (
+      <div>
+        <h1 className="status-title">{shelf} Books</h1>
+        <ul className="books-ul">
+          {isbooksDataShown && booksData ? (
+            booksData.map(each => (
+              <Link to={`/books/${each.id}`} className="link" key={each.id}>
+                <li className="book-item" key={each.id}>
+                  <div className="book-container">
+                    <img
+                      src={each.coverPic}
+                      alt={each.title}
+                      className="cover-pic"
+                    />
+                    <div className="text-container">
+                      <h1 className="book-title">{each.title}</h1>
+                      <p className="author-name">{each.authorName}</p>
+                      <p className="rating">Avg rating {each.rating}</p>
+                      <p className="status">
+                        Status:
+                        <span className="book-status">{each.readStatus}</span>
+                      </p>
+                    </div>
+                  </div>
+                </li>
+              </Link>
+            ))
+          ) : (
+            <div className="failure-view">
+              <img
+                src="https://res.cloudinary.com/student7/image/upload/v1735955249/Asset_1_1_jop0qo.png"
+                alt="no books"
+              />
+              <p className="para">
+                Your search for {searchInput} did not find any matches.
+              </p>
+            </div>
+          )}
+        </ul>
+      </div>
+    )
+  }
+
+  renderAll = () => {
+    const {apiStatus} = this.state
+    switch (apiStatus) {
+      case apiStatusConstants.success:
+        return this.renderBooks()
+      case apiStatusConstants.failure:
+        return this.failureView()
+      case apiStatusConstants.inProgress:
+        return this.loaderView()
+      default:
+        return null
+    }
+  }
+
   render() {
-    const {searchInput, booksData} = this.state
+    const {searchInput} = this.state
 
     return (
       <div>
@@ -83,47 +183,17 @@ class Bookshelves extends Component {
               value={searchInput}
               onChange={this.onChangeSearchInput}
             />
-            <BsSearch className="search-icon" />
+            <button testid="searchButton">
+              <BsSearch className="search-icon" />
+            </button>
           </div>
-          <div className="mobile-content">
-            <h1>Bookshelves</h1>
-            <ul className="labels-container">
-              {bookshelvesList.map(each => (
-                <li className="label-item">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      this.onClickLabel(each.value)
-                    }}
-                    className="read-status-btn btn"
-                  >
-                    {each.label}
-                  </button>
-                </li>
-              ))}
-            </ul>
+          <div className="d-c">
+            <BookStatus
+              onClickLabel={this.onClickLabel}
+              bookshelvesList={bookshelvesList}
+            />
+            <div>{this.renderAll()}</div>
           </div>
-          <ul className="books-ul">
-            {booksData.map(each => (
-              <Link to={`/books/${each.id}`}>
-                <li className="book-item">
-                  <div className="book-container">
-                    <img
-                      src={each.coverPic}
-                      alt={each.title}
-                      className="cover-pic"
-                    />
-                    <div className="text-container">
-                      <h1 className="book-title">{each.title}</h1>
-                      <p className="author-name">{each.authorName}</p>
-                      <p className="rating">Avg rating {each.rating}</p>
-                      <p>Status: {each.readStatus}</p>
-                    </div>
-                  </div>
-                </li>
-              </Link>
-            ))}
-          </ul>
         </div>
       </div>
     )

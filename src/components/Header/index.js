@@ -22,7 +22,10 @@ class Header extends Component {
             className="logo"
           />
           <button className="nav-btn">
-            <img src="https://res.cloudinary.com/student7/image/upload/v1729158353/menu_wfwcri.png" />
+            <img
+              src="https://res.cloudinary.com/student7/image/upload/v1729158353/menu_wfwcri.png"
+              alt="menu"
+            />
           </button>
         </div>
 

@@ -1,5 +1,6 @@
 .bookshelves-bg {
-  padding: 20px;
+  padding: 30px;
+  background-color: #eceff4;
 }
 
 .search-container {
@@ -13,6 +14,7 @@
   height: 36px;
   opacity: 0px;
 }
+
 .search-input {
   outline: none;
   border: none;
@@ -21,39 +23,7 @@
 .search-icon {
   height: 15px;
   width: 15px;
-}
-.labels-container {
-  display: flex;
-  flex-wrap: wrap;
-  width: 100%;
-  padding-left: 0px;
-  margin-top: 20px;
-}
-.label-item {
-  list-style-type: none;
-  margin-right: 12px;
-}
-
-.read-status-btn {
-  background-color: #0284c7;
-  color: rgb(239, 244, 245);
-}
-.btn {
-  background-color: transparent;
-  border: 1px solid #0284c7;
-  color: #0284c7;
-  height: 24px;
-  font-family: 'inter';
-  font-weight: 500;
-  font-size: 12px;
-  width: 100%;
-  padding-left: 8px;
-  padding-right: 8px;
-  border-radius: 25px;
-}
-.btn:hover {
-  background-color: #32e84d;
-  color: white;
+  cursor: pointer;
 }
 
 .books-ul {
@@ -70,33 +40,32 @@
   list-style-type: none;
   margin-right: 10px;
 }
-.book-container :hover {
-  box-shadow: 4px 4px 5px rgb(122, 114, 114);
-  border-radius: 10px;
-}
+
 .book-container {
   display: flex;
-  align-items: center;
+  margin: 0;
+  height: 100%;
 }
+
 .cover-pic {
   width: 133px;
   height: 155px;
-  gap: 0px;
+  flex-grow: 0;
   border-radius: 8px;
-  opacity: 0px;
   margin-right: 10px;
 }
 .text-container {
-  width: 140px;
-  height: 100px;
-  border-radius: 1px;
+  width: 180px;
+  height: 100%;
+  gap: 0px;
   opacity: 0px;
-  gap: 20px;
 }
 .book-title {
   font-family: Inter;
-  font-size: 16px;
+  font-size: 17px;
   font-weight: 600;
+  width: 100%;
+  color: #334155;
   text-align: left;
   line-height: 1.5;
   margin-bottom: 7px;
@@ -108,4 +77,58 @@
   margin-bottom: 7px;
   font-weight: 500;
   text-align: left;
+  color: #334155;
+}
+.rating {
+  color: #334155;
+  text-align: left;
+}
+.link {
+  text-decoration: none;
+  color: white;
+}
+.book-status {
+  font-family: 'roboto';
+  font-size: 15px;
+  font-weight: 400;
+  color: rgb(85, 85, 211);
+}
+.status {
+  color: #475569;
+  font-family: 'roboto';
+  text-align: left;
+}
+
+@media (min-width: 768px) {
+  .d-c {
+    display: flex;
+    justify-content: flex-start;
+    width: 100%;
+    margin-top: 30px;
+  }
+}
+
+.status-title {
+  font-family: 'roboto';
+  font-size: 20px;
+  font-weight: 500;
+  color: #33465f;
+  align-self: flex-start;
+}
+
+@media (max-width: 764px) {
+  .status-title {
+    display: none;
+  }
+}
+.loader-container .failure-view {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 30px;
+  left: 50px;
+  bottom: 30px;
+  right: 50px;
+  justify-content: center;
+  align-items: center;
 }
